@@ -57,18 +57,21 @@ class LoginViewController: UIViewController {
                         if success {
                             print("list of users updated")
                             self.performSegue(withIdentifier: "completeLogin", sender: nil)
+                            
                         } else {
                             print("error requesting users \(String(describing: error))")
+                            let alert = UIAlertController(title: "Error", message: "network error", preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
                         }
                     })
                 }
                 
             } else {
                 print("logging in unsuccessful")
-                if (error != nil) {
-                    print(error!)
-                } else {
-                    print("wrong password/ id")
+                if error != nil {
+                    self.showLoginFailure(message: String(describing: error))
+                    return
                 }
             }
         }
@@ -89,6 +92,7 @@ class LoginViewController: UIViewController {
             activityIndicator.stopAnimating()
         }
     }
+    
     func showLoginFailure(message: String) {
         let alertVC = UIAlertController(title: "Login Failed", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

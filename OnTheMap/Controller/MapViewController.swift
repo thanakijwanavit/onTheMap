@@ -41,6 +41,16 @@ class MapViewController: UIViewController,MKMapViewDelegate{
         }
         self.mapView.addAnnotations(annotations)
     }
+    @IBAction func logoutButtonPressed(_ sender: Any) {
+        OnTheMapClient.logout { (success, error) in
+            if error != nil {
+                print(String(describing: error))
+            } else {
+                print("logged out successful")
+                self.performSegue(withIdentifier: "fromMapToLogin", sender: nil)
+            }
+        }
+    }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         

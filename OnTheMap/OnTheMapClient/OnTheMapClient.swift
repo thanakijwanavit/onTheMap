@@ -33,7 +33,7 @@ class OnTheMapClient {
             case .getRequestToken: return Endpoints.base + "/authentication/token/new" + Endpoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
             case .login: return Endpoints.base + "/session"
             case .putLocation(let objectId): return "https://onthemap-api.udacity.com/v1/StudentLocation/" + objectId
-            case .studentLocation: return "https://onthemap-api.udacity.com/v1/StudentLocation"
+            case .studentLocation: return "https://onthemap-api.udacity.com/v1/StudentLocation?limit=100&order=-updatedAt"
             case .getPublicUserProfile(let userId): return "https://onthemap-api.udacity.com/v1/users/" + userId
             case .postLocation: return "https://onthemap-api.udacity.com/v1/StudentLocation"
                 }
@@ -48,7 +48,7 @@ class OnTheMapClient {
     
     class func login(username:String, password: String, completion: @escaping (Bool,Error?)->Void){
         let body = LoginObject(udacity: loginKey(username: username, password: password))
-        taskForPOSTRequestSecure(url: Endpoints.login.url, responseType: LoginResponse.self, errorResponseType: OnTheMapResponse.self, body: body) { (responseObject, error) in
+        taskForPOSTRequestSecure(url: Endpoints.login.url, responseType: LoginResponse.self, errorResponseType: UdacityErrorResponse.self, body: body) { (responseObject, error) in
             guard let responseObject = responseObject else {
                 completion(false, error)
                 print("error decoding response object")
@@ -69,6 +69,16 @@ class OnTheMapClient {
             } else {
                 completion(false, nil)
             }
+        }
+    }
+    
+    class func logout(completion: @escaping (Bool,Error?)->Void){
+        taskForDeleteRequestSecure(url: Endpoints.login.url, responseType: SessionResponse.self, errorResponseType: UdacityErrorResponse.self) { (responseObject, error) in
+            guard responseObject != nil else {
+                completion(false,error)
+                return
+            }
+            completion(true,nil)
         }
     }
     
@@ -125,6 +135,7 @@ class OnTheMapClient {
             completion(userInfo,nil)
         }
     }
+    
     
 //    class func putLocation(completion: @escaping (Bool, Error?)->Void){
 //        taskForPUTRequest(url: Endpoints.putLocation(self.Auth), responseType: <#T##Decodable.Protocol#>, body: <#T##Encodable#>, completion: <#T##(Decodable?, Error?) -> Void#>)
@@ -184,6 +195,47 @@ class OnTheMapClient {
         request.httpBody = try! JSONEncoder().encode(body)
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data?.dropFirst(5) else {
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
+                return
+            }
+            let decoder = JSONDecoder()
+            do {
+                let responseObject = try decoder.decode(ResponseType.self, from: data)
+                DispatchQueue.main.async {
+                    completion(responseObject, nil)
+                }
+            } catch {
+                do {
+                    let errorResponse = try decoder.decode(ErrorResponseType.self, from: data) as! Error
+                    DispatchQueue.main.async {
+                        completion(nil, errorResponse)
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(nil, error)
+                    }
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    class func taskForDeleteRequestSecure<ResponseType: Decodable,ErrorResponseType: Decodable>(url: URL, responseType: ResponseType.Type,errorResponseType: ErrorResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        // get xrfs token
+        var xsrfCookie: HTTPCookie? = nil
+        let cookies = HTTPCookieStorage.shared.cookies
+        for cookie in cookies! {
+            if cookie.name == "XSRF-TOKEN"{
+                xsrfCookie = cookie
+            }
+        }
+        request.setValue(xsrfCookie?.value, forHTTPHeaderField: "X-XSRF-TOKEN")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data?.dropFirst(5) else {
                 DispatchQueue.main.async {

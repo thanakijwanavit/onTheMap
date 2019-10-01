@@ -6,6 +6,17 @@ class TableViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func logoutButtonPressed(_ sender: Any) {
+        OnTheMapClient.logout { (success, error) in
+            if error != nil {
+                print(String(describing: error))
+            } else {
+                print("logged out successful")
+                self.performSegue(withIdentifier: "fromListToLogin", sender: nil)
+            }
+        }
+        
+    }
     var selectedIndex = 0
     var latestLocation = [Student]()
     
