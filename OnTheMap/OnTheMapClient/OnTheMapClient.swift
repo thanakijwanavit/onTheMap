@@ -46,6 +46,8 @@ class OnTheMapClient {
     
     ////custom func
     
+ 
+    
     class func login(username:String, password: String, completion: @escaping (Bool,Error?)->Void){
         let body = LoginObject(udacity: loginKey(username: username, password: password))
         taskForPOSTRequestSecure(url: Endpoints.login.url, responseType: LoginResponse.self, errorResponseType: UdacityErrorResponse.self, body: body) { (responseObject, error) in
@@ -113,6 +115,7 @@ class OnTheMapClient {
         let lastName = studentInfo.lastName
         
         let student = PostLocationRequest(uniqueKey: OnTheMapClient.Auth.accountId, firstName: firstName, lastName: lastName, mapString: mapString, mediaURL: mediaURL, latitude: location.latitude, longitude: location.longitude)
+        LocationModel.postedLocation = Student(objectId: OnTheMapClient.Auth.accountId, uniqueKey: OnTheMapClient.Auth.accountId, firstName: firstName, lastName: lastName, mapString: mapString, mediaURL: mediaURL, latitude: location.latitude, longitude: location.longitude, createdAt: Date().description, updatedAt: Date().description)
         taskForPOSTRequest(url: Endpoints.postLocation.url, responseType: PostLocationResponse.self , body: student) { (objectData, error) in
             guard objectData != nil else {
                 print ("post location has failed")

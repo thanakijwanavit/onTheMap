@@ -23,6 +23,11 @@ class LoginViewController: UIViewController {
         
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.hideKeyboardWhenTappedAround()
+    }
+    
     
     func handleSessionResponse(success: Bool, Error: Error?){
         if success{
@@ -56,6 +61,7 @@ class LoginViewController: UIViewController {
                     OnTheMapClient.getLocation(completion: { (success, error) in
                         if success {
                             print("list of users updated")
+                            self.setLoggingIn(false)
                             self.performSegue(withIdentifier: "completeLogin", sender: nil)
                             
                         } else {
@@ -70,8 +76,21 @@ class LoginViewController: UIViewController {
             } else {
                 print("logging in unsuccessful")
                 if error != nil {
-                    self.showLoginFailure(message: String(describing: error))
-                    return
+                    if let err = error as? URLError, err.code  == URLError.Code.notConnectedToInternet
+                     {
+                         // No internet
+                        self.showLoginFailure(message: "not connected to internet")
+                        self.setLoggingIn(false)
+                        return
+                     }
+                     else
+                     {
+                        self.showLoginFailure(message: "wrong password or user id")
+                        self.setLoggingIn(false)
+                        return
+                         // Other errors
+                     }
+                    
                 }
             }
         }
@@ -80,6 +99,17 @@ class LoginViewController: UIViewController {
     
     @IBAction func loginViaWebsiteTapped() {
         setLoggingIn(true)
+        
+        
+        let newLink: String = "https://auth.udacity.com/sign-up"
+        if UIApplication.shared.canOpenURL(URL(string: newLink)!) {
+        UIApplication.shared.open(URL(string: newLink)!)
+        } else {
+            let alertController = UIAlertController(title: "Sorry", message: "Google Chrome app is not installed", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alertController.addAction(okAction)
+            present(alertController, animated: true, completion: nil)
+        }
         
     }
     

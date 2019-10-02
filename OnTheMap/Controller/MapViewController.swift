@@ -12,9 +12,39 @@ import MapKit
 
 class MapViewController: UIViewController,MKMapViewDelegate{
     @IBOutlet weak var mapView: MKMapView!
+    override func viewWillAppear(_ animated: Bool) {
+        let currentLocation = LocationModel.postedLocation
+        print("the current location is \(String(describing: currentLocation?.latitude))")
+        if currentLocation != nil {
+            self.mapView.setCenter(CLLocationCoordinate2D(latitude: currentLocation?.latitude ?? 0, longitude: currentLocation?.longitude ?? 0), animated: true)
+            
+            // set annotation
+            let lat = CLLocationDegrees(currentLocation!.latitude)
+            let long = CLLocationDegrees(currentLocation!.longitude)
+            
+            // The lat and long are used to create a CLLocationCoordinates2D instance.
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            
+            let first = currentLocation!.firstName
+            let last = currentLocation!.lastName
+            let mediaURL = currentLocation!.mediaURL
+            
+            // Here we create the annotation and set its coordiate, title, and subtitle properties
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = "\(first) \(last)"
+            annotation.subtitle = mediaURL
+            self.mapView.addAnnotation(annotation)
+            self.mapView.selectAnnotation(annotation, animated: true)
+        }
+    }
     override func viewDidLoad() {
         //set map center
-        let locations = LocationModel.latestLocation
+        var locations = LocationModel.latestLocation
+        let currentLocation = LocationModel.postedLocation
+        if currentLocation != nil {
+            locations.append(currentLocation!)
+        }
         var annotations = [MKPointAnnotation]()
         for dictionary in locations {
             
@@ -40,6 +70,7 @@ class MapViewController: UIViewController,MKMapViewDelegate{
             annotations.append(annotation)
         }
         self.mapView.addAnnotations(annotations)
+        
     }
     @IBAction func logoutButtonPressed(_ sender: Any) {
         OnTheMapClient.logout { (success, error) in
@@ -47,7 +78,8 @@ class MapViewController: UIViewController,MKMapViewDelegate{
                 print(String(describing: error))
             } else {
                 print("logged out successful")
-                self.performSegue(withIdentifier: "fromMapToLogin", sender: nil)
+                self.navigationController?.dismiss(animated: true, completion: nil)
+//                self.performSegue(withIdentifier: "fromMapToLogin", sender: nil)
             }
         }
     }

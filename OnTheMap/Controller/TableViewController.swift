@@ -12,7 +12,8 @@ class TableViewController: UIViewController {
                 print(String(describing: error))
             } else {
                 print("logged out successful")
-                self.performSegue(withIdentifier: "fromListToLogin", sender: nil)
+                self.navigationController?.dismiss(animated: true, completion: nil)
+//                self.performSegue(withIdentifier: "fromListToLogin", sender: nil)
             }
         }
         
@@ -22,19 +23,25 @@ class TableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.latestLocation = LocationModel.latestLocation
+        latestLocation = LocationModel.latestLocation
         self.tableView.reloadData()
-        self.latestLocation = LocationModel.latestLocation
+        if #available(iOS 13.0, *) {
+            navigationController?.navigationBar.scrollEdgeAppearance = nil
+        } else {
+            // Fallback on earlier versions
+        }
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        latestLocation = LocationModel.latestLocation
         tableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     }
+    
     
 }
 

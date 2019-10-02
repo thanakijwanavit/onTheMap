@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04240CEC23448031002D6AE0 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04240CEB23448031002D6AE0 /* UINavigationController.swift */; };
 		043F81C323354358008DC4AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043F81C223354358008DC4AB /* AppDelegate.swift */; };
 		043F81C523354358008DC4AB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043F81C423354358008DC4AB /* ViewController.swift */; };
 		043F81C823354358008DC4AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 043F81C623354358008DC4AB /* Main.storyboard */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04240CEB23448031002D6AE0 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		043F81BF23354358008DC4AB /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		043F81C223354358008DC4AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		043F81C423354358008DC4AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				043F81E82339D57D008DC4AB /* MapViewController.swift */,
 				043F81EF2339DCDB008DC4AB /* TableViewController.swift */,
 				043F8204233BD126008DC4AB /* InformationPostingViewController.swift */,
+				04240CEB23448031002D6AE0 /* UINavigationController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				043F81E92339D57D008DC4AB /* MapViewController.swift in Sources */,
+				04240CEC23448031002D6AE0 /* UINavigationController.swift in Sources */,
 				043F81EE2339DAEB008DC4AB /* MapView.swift in Sources */,
 				043F81FF233BBEDE008DC4AB /* PutLocationResponse.swift in Sources */,
 				043F81F92339EFE1008DC4AB /* LocationTableViewCell.swift in Sources */,
@@ -428,7 +432,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = nic.OnTheMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -446,7 +450,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = nic.OnTheMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
