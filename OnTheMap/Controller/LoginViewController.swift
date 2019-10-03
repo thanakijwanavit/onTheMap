@@ -56,6 +56,12 @@ class LoginViewController: UIViewController {
         setLoggingIn(true)
         OnTheMapClient.login(username: emailTextField.text ?? "", password: passwordTextField.text ?? "") { (success, error) in
             if success {
+                OnTheMapClient.getUserData { (userInfo, error) in
+                    guard let userInfo = userInfo else{
+                        return
+                    }
+                    LocationModel.userInfo = userInfo
+                }
                 print("logged in successfully")
                 DispatchQueue.main.async {
                     OnTheMapClient.getLocation(completion: { (success, error) in

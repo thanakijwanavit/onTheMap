@@ -11,4 +11,5 @@ import Foundation
 class LocationModel {
     static var latestLocation = [Student]()
     static var postedLocation:Student?
+    static var userInfo:GetUserInfoResponse?
 }
