@@ -48,9 +48,12 @@ class InformationPostingViewController: UIViewController {
         self.findingLocation(false)
         submitButton.isHidden = false
         
-        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
-        mapView.setRegion(region, animated: true)
+        
+        print("map region is set")
         self.setAnnotation(currentLocation: location, firstName: LocationModel.userInfo!.firstName, lastName: LocationModel.userInfo!.lastName, mediaURL: linkTextField.text ?? "")
+        
+        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+        mapView.setRegion(region, animated: true)
     }
     
     //post location after getting the data successfully
